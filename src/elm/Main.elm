@@ -65,7 +65,7 @@ createCounter : Html Action
 createCounter =
     div []
         [ button
-            [ class "ui teal labeled icon button"
+            [ class "ui teal labeled basic icon button"
             , onClick Create
             ]
             [ text "Create counter"
@@ -87,6 +87,9 @@ counterList counters =
 counterItem : Counter -> Html Action
 counterItem ( id, total ) =
     let
+        isNegative =
+            total < 0
+
         changeButton sign msg =
             button
                 [ class "ui icon button"
@@ -102,14 +105,20 @@ counterItem ( id, total ) =
                 [ i [ class "remove icon" ] [] ]
 
         counterLabel =
-            span [ class "ui basic label" ]
+            div
+                [ classList
+                    [ ( "ui basic big label", True )
+                    , ( "red", isNegative )
+                    , ( "green", not <| isNegative )
+                    ]
+                ]
                 [ text ("Counter: " ++ toString total ++ " ")
                 ]
     in
         div [ class "item" ]
-            [ counterLabel
-            , div []
-                [ div [ class "ui icon basic teal buttons" ]
+            [ div [ class "middle aligned" ]
+                [ counterLabel
+                , div [ class "ui icon basic teal buttons" ]
                     [ changeButton "angle up" (Increment id)
                     , changeButton "angle down" (Decrement id)
                     ]
