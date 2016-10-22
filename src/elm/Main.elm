@@ -25,27 +25,36 @@ model =
 view : Model -> Html Action
 view model =
     let
-        negativeCounter =
-            model.counter < 0
+        header =
+            h1 [ class "ui header" ] [ text "Simple Counter" ]
     in
         div []
             [ div [ class "ui center aligned container" ]
-                [ h1 [ class "ui header" ] [ text "Simple Counter" ]
-                , div []
-                    [ button
-                        [ class "ui primary button"
-                        , onClick Decrement
-                        ]
-                        [ text "+" ]
-                    , span [ class "ui large label" ]
-                        [ text (" " ++ toString model.counter ++ " ")
-                        ]
-                    , button
-                        [ class "ui primary button"
-                        , onClick Decrement
-                        ]
-                        [ text "-" ]
-                    ]
+                [ header
+                , counter model
+                ]
+            ]
+
+
+counter : Model -> Html Action
+counter model =
+    let
+        changeButton sign msg =
+            span
+                [ onClick msg
+                ]
+                [ i [ class (sign ++ " icon") ] [] ]
+
+        counterLabel =
+            span [ class "ui basic right pointing label" ]
+                [ text ("Counter:  " ++ toString model.counter ++ " ")
+                ]
+    in
+        div [ class "ui left labeled button" ]
+            [ counterLabel
+            , div [ class "ui icon button" ]
+                [ changeButton "plus" Increment
+                , changeButton "minus" Decrement
                 ]
             ]
 
