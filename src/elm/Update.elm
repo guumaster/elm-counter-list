@@ -1,6 +1,7 @@
 module Update exposing (update, Action(..))
 
 import Model exposing (..)
+import String exposing (trim)
 
 
 type Action
@@ -21,7 +22,10 @@ update action model =
             { model | counters = decrementCounter counterId model.counters } ! []
 
         Create ->
-            addCounter model ! []
+            if (trim model.counterName) /= "" then
+                addCounter model ! []
+            else
+                model ! []
 
         Remove counterId ->
             { model | counters = removeCounter counterId model.counters } ! []
@@ -64,7 +68,7 @@ addCounter model =
             model.lastId + 1
 
         newCounter =
-            Counter newId model.counterName 0
+            Counter newId (trim model.counterName) 0
     in
         { model | counters = [ newCounter ] ++ model.counters, lastId = newId, counterName = "" }
 
