@@ -6,19 +6,41 @@ import Html.App as App
 import Html.Attributes exposing (..)
 
 
+type alias CounterId =
+    Int
+
+
+type alias Total =
+    Int
+
+
+type alias Counter =
+    ( CounterId, Total )
+
+
 type alias Model =
-    { counter : Int
+    { counters : List Counter
+    , lastId : CounterId
     }
 
 
+type Sign
+    = Plus
+    | Minus
+
+
 type Action
-    = Increment
-    | Decrement
+    = Increment CounterId
+    | Decrement CounterId
 
 
 model : Model
 model =
-    { counter = 0
+    { counters =
+        [ ( 0, 0 )
+        , ( 1, 0 )
+        ]
+    , lastId = 1
     }
 
 
@@ -26,47 +48,77 @@ view : Model -> Html Action
 view model =
     let
         header =
-            h1 [ class "ui header" ] [ text "Simple Counter" ]
+            h1 [ class "ui header" ] [ text "Counter List" ]
     in
         div []
             [ div [ class "ui center aligned container" ]
                 [ header
-                , counter model
+                , counterList model.counters
                 ]
             ]
 
 
-counter : Model -> Html Action
-counter model =
+counterList : List Counter -> Html Action
+counterList counters =
+    div [ class "ui divided items" ] <| List.map counterItem counters
+
+
+counterItem : Counter -> Html Action
+counterItem ( id, total ) =
     let
         changeButton sign msg =
-            span
-                [ onClick msg
+            button
+                [ class "ui icon button"
+                , onClick msg
                 ]
                 [ i [ class (sign ++ " icon") ] [] ]
 
         counterLabel =
-            span [ class "ui basic right pointing label" ]
-                [ text ("Counter:  " ++ toString model.counter ++ " ")
+            span [ class "ui basic label" ]
+                [ text ("Counter: " ++ toString total ++ " ")
                 ]
     in
-        div [ class "ui left labeled button" ]
+        div [ class "item" ]
             [ counterLabel
-            , div [ class "ui icon button" ]
-                [ changeButton "plus" Increment
-                , changeButton "minus" Decrement
+            , div [ class "ui icon buttons" ]
+                [ changeButton "plus" (Increment id)
+                , changeButton "minus" (Decrement id)
                 ]
             ]
 
 
 update : Action -> Model -> Model
 update action model =
-    case action of
-        Increment ->
-            { model | counter = model.counter + 1 }
+    let
+        incrementCounter =
+            updateCounter Plus
 
-        Decrement ->
-            { model | counter = model.counter - 1 }
+        decrementCounter =
+            updateCounter Minus
+    in
+        case action of
+            Increment counterId ->
+                { model | counters = List.map (incrementCounter counterId) model.counters }
+
+            Decrement counterId ->
+                { model | counters = List.map (decrementCounter counterId) model.counters }
+
+
+updateCounter : Sign -> CounterId -> Counter -> Counter
+updateCounter sign counterId ( id, total ) =
+    let
+        op =
+            case sign of
+                Plus ->
+                    (+)
+
+                Minus ->
+                    (-)
+    in
+        if counterId == id then
+            ( id, op total 1 )
+        else
+            ( id, total )
 
 
 main : Program Never
