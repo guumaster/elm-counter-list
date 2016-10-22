@@ -32,6 +32,8 @@ type Sign
 type Action
     = Increment CounterId
     | Decrement CounterId
+    | Remove CounterId
+    | Create
 
 
 model : Model
@@ -51,16 +53,35 @@ view model =
             h1 [ class "ui header" ] [ text "Counter List" ]
     in
         div []
-            [ div [ class "ui center aligned container" ]
+            [ div [ class "ui center aligned basic raised very padded text container segment" ]
                 [ header
+                , createCounter
                 , counterList model.counters
                 ]
             ]
 
 
+createCounter : Html Action
+createCounter =
+    div []
+        [ button
+            [ class "ui teal labeled icon button"
+            , onClick Create
+            ]
+            [ text "Create counter"
+            , i [ class "add icon" ] []
+            ]
+        ]
+
+
 counterList : List Counter -> Html Action
 counterList counters =
-    div [ class "ui divided items" ] <| List.map counterItem counters
+    let
+        divider =
+            [ div [ class "ui horizontal divider" ] [] ]
+    in
+        div [ class "ui divided items" ]
+            (divider ++ List.map counterItem counters)
 
 
 counterItem : Counter -> Html Action
@@ -73,6 +94,13 @@ counterItem ( id, total ) =
                 ]
                 [ i [ class (sign ++ " icon") ] [] ]
 
+        removeButton id =
+            button
+                [ class "ui negative basic icon button"
+                , onClick (Remove id)
+                ]
+                [ i [ class "remove icon" ] [] ]
+
         counterLabel =
             span [ class "ui basic label" ]
                 [ text ("Counter: " ++ toString total ++ " ")
@@ -80,9 +108,13 @@ counterItem ( id, total ) =
     in
         div [ class "item" ]
             [ counterLabel
-            , div [ class "ui icon buttons" ]
-                [ changeButton "plus" (Increment id)
-                , changeButton "minus" (Decrement id)
+            , div []
+                [ div [ class "ui icon basic teal buttons" ]
+                    [ changeButton "angle up" (Increment id)
+                    , changeButton "angle down" (Decrement id)
+                    ]
+                , span [] [ text " " ]
+                , removeButton id
                 ]
             ]
 
@@ -95,6 +127,9 @@ update action model =
 
         decrementCounter =
             updateCounter Minus
+
+        removeCounter removeId ( id, counter ) =
+            removeId /= id
     in
         case action of
             Increment counterId ->
@@ -102,6 +137,24 @@ update action model =
 
             Decrement counterId ->
                 { model | counters = List.map (decrementCounter counterId) model.counters }
+
+            Remove counterId ->
+                { model | counters = List.filter (removeCounter counterId) model.counters }
+
+            Create ->
+                addCounter model
+
+
+addCounter : Model -> Model
+addCounter model =
+    let
+        newId =
+            model.lastId + 1
+
+        newCounter =
+            ( newId, 0 )
+    in
+        { model | counters = [ newCounter ] ++ model.counters, lastId = newId }
 
 
 updateCounter : Sign -> CounterId -> Counter -> Counter
