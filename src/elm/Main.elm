@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import Html.App as App
 import Html.Attributes exposing (..)
 
@@ -10,17 +10,24 @@ type alias CounterId =
     Int
 
 
-type alias Total =
-    Int
+type alias CounterName =
+    String
 
 
 type alias Counter =
-    ( CounterId, Total )
+    ( CounterId, CounterData )
+
+
+type alias CounterData =
+    { name : String
+    , total : Int
+    }
 
 
 type alias Model =
     { counters : List Counter
     , lastId : CounterId
+    , counterName : String
     }
 
 
@@ -34,15 +41,17 @@ type Action
     | Decrement CounterId
     | Remove CounterId
     | Create
+    | UpdateName CounterName
 
 
 model : Model
 model =
     { counters =
-        [ ( 0, 0 )
-        , ( 1, 0 )
+        [ ( 0, CounterData "Things" 0 )
+        , ( 1, CounterData "More things" 0 )
         ]
     , lastId = 1
+    , counterName = ""
     }
 
 
@@ -51,80 +60,84 @@ view model =
     let
         header =
             h1 [ class "ui header" ] [ text "Counter List" ]
+
+        divider =
+            div [ class "ui horizontal divider" ] []
     in
         div []
             [ div [] []
             , div [ class "ui center aligned raised very padded text container segment" ]
                 [ header
-                , createCounter
+                , createCounter model.counterName
+                , divider
                 , counterList model.counters
                 ]
             ]
 
 
-createCounter : Html Action
-createCounter =
-    div []
-        [ button
-            [ class "ui teal labeled basic icon button"
-            , onClick Create
+createCounter : CounterName -> Html Action
+createCounter name =
+    div [ class "ui action input " ]
+        [ input
+            [ type' "text"
+            , placeholder "Counter..."
+            , value name
+            , onInput UpdateName
             ]
-            [ text "Create counter"
-            , i [ class "add icon" ] []
+            []
+        , button
+            [ class "ui teal icon button"
+            , onClick (Create)
+            ]
+            [ i [ class "add icon" ] []
             ]
         ]
 
 
 counterList : List Counter -> Html Action
 counterList counters =
-    let
-        divider =
-            [ div [ class "ui horizontal divider" ] [] ]
-    in
-        div [ class "ui divided items" ]
-            (divider ++ List.map counterItem counters)
+    div [ class "ui cards" ]
+        (List.map counterItem counters)
 
 
 counterItem : Counter -> Html Action
-counterItem ( id, total ) =
+counterItem ( id, counter ) =
     let
-        isNegative =
-            total < 0
-
         changeButton sign msg =
             button
-                [ class "ui icon button"
+                [ class "ui basic teal icon button"
                 , onClick msg
                 ]
                 [ i [ class (sign ++ " icon") ] [] ]
 
         removeButton id =
             button
-                [ class "ui negative basic icon button"
+                [ class "basic red mini ui icon button"
                 , onClick (Remove id)
                 ]
                 [ i [ class "remove icon" ] [] ]
 
         counterLabel =
-            div
-                [ classList
-                    [ ( "ui basic big label", True )
-                    , ( "red", isNegative )
-                    , ( "green", not <| isNegative )
-                    ]
-                ]
-                [ text ("Counter: " ++ toString total ++ " ")
+            div [ class "ui basic big " ]
+                [ text ("Total: " ++ toString counter.total ++ " ")
                 ]
     in
-        div [ class "item" ]
-            [ div [ class "middle aligned" ]
+        div [ class "raised link card" ]
+            [ div [ class "content" ]
+                [ div [ class "right floated ui" ]
+                    [ removeButton id
+                    ]
+                , div [ class "header" ] [ text counter.name ]
+                ]
+            , div
+                [ class "content middle aligned" ]
                 [ counterLabel
-                , div [ class "ui icon basic teal buttons" ]
+                ]
+            , div [ class "extra content" ]
+                [ div [ class "ui icon compact two buttons" ]
                     [ changeButton "angle up" (Increment id)
                     , changeButton "angle down" (Decrement id)
                     ]
-                , span [] [ text " " ]
-                , removeButton id
                 ]
             ]
 
@@ -154,6 +167,9 @@ update action model =
             Create ->
                 addCounter model
 
+            UpdateName name ->
+                { model | counterName = name }
+
 
 addCounter : Model -> Model
 addCounter model =
@@ -162,13 +178,13 @@ addCounter model =
             model.lastId + 1
 
         newCounter =
-            ( newId, 0 )
+            ( newId, CounterData model.counterName 0 )
     in
-        { model | counters = [ newCounter ] ++ model.counters, lastId = newId }
+        { model | counters = [ newCounter ] ++ model.counters, lastId = newId, counterName = "" }
 
 
 updateCounter : Sign -> CounterId -> Counter -> Counter
-updateCounter sign counterId ( id, total ) =
+updateCounter sign counterId ( id, counter ) =
     let
         op =
             case sign of
@@ -179,9 +195,9 @@ updateCounter sign counterId ( id, total ) =
                     (-)
     in
         if counterId == id then
-            ( id, op total 1 )
+            ( id, { counter | total = Basics.max 0 <| op counter.total 1 } )
         else
-            ( id, total )
+            ( id, counter )
 
 
 main : Program Never
