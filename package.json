@@ -1,12 +1,12 @@
 {
-  "name": "elm-morning-coffee",
-  "description": "Elm Morning Coffee app",
+  "name": "elm-counter-list",
+  "description": "Elm Counter List",
   "version": "1.0.0",
   "license": "MIT",
   "author": "Guumaster",
   "repository": {
     "type": "git",
-    "url": "https://github.com/guumaster"
+    "url": "https://github.com/guumaster/elm-counter-list.git"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base src/",

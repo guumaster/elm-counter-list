@@ -1,8 +1,8 @@
 {
     "version": "1.0.0",
-    "summary": "A simple app demo",
-    "repository": "https://github.com/user/project.git",
-    "license": "BSD3",
+    "summary": "A simple counter list demo",
+    "repository": "https://github.com/guumaster/elm-counter-list.git",
+    "license": "MIT",
     "source-directories": [
         "src/elm"
     ],
