@@ -11,23 +11,23 @@ type Action
     | UpdateName CounterName
 
 
-update : Action -> Model -> Model
+update : Action -> Model -> ( Model, Cmd Action )
 update action model =
     case action of
         Increment counterId ->
-            { model | counters = incrementCounter counterId model.counters }
+            { model | counters = incrementCounter counterId model.counters } ! []
 
         Decrement counterId ->
-            { model | counters = decrementCounter counterId model.counters }
+            { model | counters = decrementCounter counterId model.counters } ! []
 
         Create ->
-            addCounter model
+            addCounter model ! []
 
         Remove counterId ->
-            { model | counters = removeCounter counterId model.counters }
+            { model | counters = removeCounter counterId model.counters } ! []
 
         UpdateName name ->
-            { model | counterName = name }
+            { model | counterName = name } ! []
 
 
 incrementCounter : CounterId -> List Counter -> List Counter
