@@ -53,7 +53,8 @@ view model =
             h1 [ class "ui header" ] [ text "Counter List" ]
     in
         div []
-            [ div [ class "ui center aligned basic raised very padded text container segment" ]
+            [ div [] []
+            , div [ class "ui center aligned raised very padded text container segment" ]
                 [ header
                 , createCounter
                 , counterList model.counters
