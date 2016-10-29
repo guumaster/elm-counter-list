@@ -5,6 +5,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var autoprefixer = require('autoprefixer')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
+var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 console.log('WEBPACK GO!')
 
@@ -47,7 +48,19 @@ var commonConfig = {
       template: 'src/static/index.html',
       inject: 'body',
       filename: 'index.html'
-    })
+    }),
+    new BrowserSyncPlugin({
+      host: 'localhost',
+      port: 8081,
+      open: false,
+      proxy: 'http://localhost:8080/'
+    },
+      // plugin options
+      {
+        // prevent BrowserSync from reloading the page
+        // and let Webpack Dev Server take care of this
+        reload: false
+      })
   ],
 
   postcss: [autoprefixer({ browsers: ['last 2 versions'] })],
