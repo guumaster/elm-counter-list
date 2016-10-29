@@ -36,14 +36,14 @@
     top: auto;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 620px) {
     #forkongithub {
         position: absolute;
         margin-top: 0;
         display: block;
         top: 0;
         right: 0;
-        width: 100%;
+        width: 180px;
         overflow: hidden;
         height: 200px;
         z-index: 9999;
