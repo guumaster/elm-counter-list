@@ -142,7 +142,7 @@ if (TARGET_ENV === 'production') {
       new CopyWebpackPlugin([
         { from: 'src/static/images/', to: 'static/images/' },
         { from: 'src/static/favicon.ico' },
-        { from: 'src/static/manifest.json', to: 'static/' },
+        { from: 'src/static/manifest-gh-pages.json', to: 'static/manifest.json' },
         { from: 'src/static/service-worker.js' }
       ]),
 
