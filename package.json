@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base src/",
-    "build": "rimraf dist && webpack",
+    "build": "rimraf docs && webpack",
     "watch": "webpack --watch",
     "postinstall": "elm package install --yes"
   },

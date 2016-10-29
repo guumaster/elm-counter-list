@@ -16,7 +16,7 @@ var TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? 'production' : 'd
 var commonConfig = {
 
   output: {
-    path: path.resolve(__dirname, 'dist/'),
+    path: path.resolve(__dirname, 'docs/'),
     filename: '[hash].js',
   },
 
@@ -46,7 +46,7 @@ var commonConfig = {
   plugins: [
     new CopyWebpackPlugin([
       { from: 'src/static/images/', to: '/static/images/' },
-      { from: 'src/static/favicon.ico', to: '/static/' },
+      { from: 'src/static/favicon.ico' },
       { from: 'src/static/manifest.json', to: '/static/' },
       { from: 'src/static/service-worker.js', to: '/' },
     ]),
@@ -81,12 +81,13 @@ if (TARGET_ENV === 'development') {
     watch: true,
     entry: [
       'webpack-dev-server/client?http://localhost:8080',
-      path.join(__dirname, 'src/static/index.js')
+      path.join(__dirname, 'src/static/index-dev.js')
     ],
 
     devServer: {
       inline: true,
-      progress: true
+      progress: true,
+      stats: { colors: true }
     },
 
     module: {
@@ -140,7 +141,7 @@ if (TARGET_ENV === 'production') {
     plugins: [
       new CopyWebpackPlugin([
         { from: 'src/static/images/', to: 'static/images/' },
-        { from: 'src/static/favicon.ico', to: 'static/'},
+        { from: 'src/static/favicon.ico' },
         { from: 'src/static/manifest.json', to: 'static/' },
         { from: 'src/static/service-worker.js' }
       ]),

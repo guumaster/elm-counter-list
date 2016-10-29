@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Html.App as App
+import TimeTravel.Html.App as TimeTravel
 import Model exposing (model)
 import View exposing (view)
 import Update exposing (update)
@@ -8,7 +8,7 @@ import Update exposing (update)
 
 main : Program Never
 main =
-    App.program
+    TimeTravel.program
         { init = model ! []
         , view = view
         , update = update
