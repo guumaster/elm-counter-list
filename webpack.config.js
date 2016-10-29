@@ -44,6 +44,12 @@ var commonConfig = {
   },
 
   plugins: [
+    new CopyWebpackPlugin([
+      { from: 'src/static/images/', to: '/static/images/' },
+      { from: 'src/static/favicon.ico', to: '/static/' },
+      { from: 'src/static/manifest.json', to: '/static/' },
+      { from: 'src/static/service-worker.js', to: '/' },
+    ]),
     new HtmlWebpackPlugin({
       template: 'src/static/index.html',
       inject: 'body',
@@ -133,13 +139,10 @@ if (TARGET_ENV === 'production') {
 
     plugins: [
       new CopyWebpackPlugin([
-        {
-          from: 'src/static/img/',
-          to: 'static/img/'
-        },
-        {
-          from: 'src/static/favicon.ico'
-        },
+        { from: 'src/static/images/', to: 'static/images/' },
+        { from: 'src/static/favicon.ico', to: 'static/'},
+        { from: 'src/static/manifest.json', to: 'static/' },
+        { from: 'src/static/service-worker.js' }
       ]),
 
       new webpack.optimize.OccurenceOrderPlugin(),
