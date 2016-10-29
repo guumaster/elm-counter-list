@@ -20,14 +20,17 @@ view { counters, counterName } =
         ]
 
 
+contentWrapper : List (Html Action) -> Html Action
 contentWrapper =
     div [ class "ui center aligned raised very padded text container segment" ]
 
 
+divider : Html Action
 divider =
     div [ class "ui horizontal divider" ] []
 
 
+header : Html Action
 header =
     h1 [ class "ui header" ] [ text "Counter List" ]
 
