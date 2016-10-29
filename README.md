@@ -1,9 +1,10 @@
 # Elm Counter List
---
 
 This is a simple [Elm](http://elm-lang.org/) [PWA](https://developers.google.com/web/progressive-web-apps/) with a counter list.
 
-You can [try it online](https://guumaster.github.io/elm-counter-list/)
+[![Example](elm-counter-list.gif)](https://guumaster.github.io/elm-counter-list/)
+
+You can **[try it online](https://guumaster.github.io/elm-counter-list/)**
 
 
 ### Development
